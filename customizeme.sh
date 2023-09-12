@@ -47,9 +47,9 @@ sudo unzip -o -d /usr/local/share/fonts /tmp/hackfonts.zip
 
 
 #______PimpMyKali________
-sudo cd /opt
+cd /opt
 sudo git clone https://github.com/Dewalt-arch/pimpmykali
-sudo cd pimpmykali
+cd pimpmykali
 ### Disable prompt root login, option N
 cat  pimpmykali.sh | sed 's/read -n1 -p "   Please type Y or N : " userinput/userinput="Y"/g' |sudo sponge pimpmykali.sh
 sudo ./pimpmykali.sh --all
@@ -65,7 +65,7 @@ xfconf-query --channel xfce4-desktop --property /backdrop/screen0/monitorVirtual
 
 #sudo ln -sf /usr/share/backgrounds/login.png /usr/share/desktop-base/kali-theme/login/background
 
-sudo cat << 'EOF' > /etc/lightdm/lightdm-gtk-greeter.conf 
+cat << 'EOF' > /tmp/lightdm-gtk-greeter.conf 
 [greeter]
 background = /usr/share/backgrounds/login.png
 theme-name = Kali-Dark
@@ -84,7 +84,7 @@ position = 85%,end -50%,center
 
 EOF
 
-
+sudo mv /tmp/lightdm-gtk-greeter.conf /etc/lightdm/lightdm-gtk-greeter.conf
 
 #______Custom Monitors________
 
@@ -94,7 +94,7 @@ cd /opt/custom
 sudo touch target
 sudo touch vpn
 sudo touch lan
-
+sudo chmod +x /opt/custom/*
 
 
 #Custom Panel Bar
@@ -340,7 +340,7 @@ echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' |sudo tee -a /root/.zshrc
 
 echo "# To customize prompt, run p10k configure or edit ~/.p10k.zsh. " |sudo tee -a /root/.zshrc
 echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" |sudo tee -a /root/.zshrc
-
+echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" |tee -a /home/$USERNAME/.zshrc
 
 sudo cp -r /home/$USERNAME/powerlevel10k /root
 
@@ -353,5 +353,5 @@ sed -i 's/fontFamily=.*/fontFamily=Hack Nerd Font Mono/'  /home/$USERNAME/.confi
 sed -i 's/fontSize=.*/fontSize=11/'  /home/$USERNAME/.config/qterminal.org/qterminal.ini
 sed -i 's/Rename%20Session=.*/Rename%20Session=F2/'    /home/$USERNAME/.config/qterminal.org/qterminal.ini
 
-
+sudo rm -rf /tmp/*
 reboot

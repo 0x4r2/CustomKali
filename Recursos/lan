@@ -1,13 +1,9 @@
-
 #!/bin/bash
 
-
-C=$(printf '\033')
-RED="${C}[1;31m"
-
+ICO="network-wired-symbolic"
 ip=$(ifconfig "eth0" |grep "inet " | awk '{print $2}')
-
 #echo "%{F#2495e7} %{F#ffffff}$(/usr/sbin/ifconfig eth0 | grep "inet " | awk '{print $2}')%{u-}"
 
-echo "${RED}<txt> "$ip"</txt>"
-
+printf "<txt>${ip}</txt>"
+printf "<icon>${ICO}</icon>"
+printf "<tool>Eth IP</tool>"

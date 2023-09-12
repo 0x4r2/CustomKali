@@ -1,9 +1,8 @@
 #!/bin/bash
 
 FILE=/tmp/._status
-TARG=/tmp/target
-ICO="什"
-
+TARG=/tmp/.target
+ICO="gitlab-tray"
 IP=$(strings $TARG 2>/dev/null)
 
 ping -c1 -w1 -s32 -i1 $IP &> /dev/null
@@ -21,9 +20,10 @@ if [ -f "$FILE" ]; then
 		STATUS="$control"
 	fi
 	if [ "$STATUS" = '1' ] && [ -f "$TARG" ]; then
-		echo  "$ICO $(strings $TARG)"
+		printf  "<txt>${IP} </txt>"
+		printf  "<icon>${ICO}</icon>"
 	else
-		echo ""
+		printf  "<icon>${ICO}</icon>"
 	fi
 else
 	touch "$FILE" &>/dev/null

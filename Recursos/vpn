@@ -1,0 +1,12 @@
+#!/bin/bash
+
+IFACE=$(ifconfig |grep tun0 |awk '{print $1}' |tr -d ":")
+ico=-''
+
+if [ "$IFACE" = "tun0" ]; then
+	status=$(ifconfig "tun0" |grep "inet " | awk '{print $2}')
+else
+	status="Offline"
+
+fi
+echo  "<txt>| "$status"|</txt>"

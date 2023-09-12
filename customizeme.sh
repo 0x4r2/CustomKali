@@ -7,7 +7,7 @@ if [ "$(id -u)" = "0" ]; then
     echo "Este script no debe ser ejecutado como root."
     exit 1
 fi
-
+ 
 
 USERNAME=$(cat /etc/passwd |grep 1000:1000 |awk '{print $1}' FS=:)
 
@@ -37,6 +37,8 @@ sudo apt install -y figlet
 sudo apt install -y xclip
 sudo apt install -y git
 sudo apt install -y gobuster ffuf dirbuster hydra dirb
+sudo apt install -y xmlstarlet
+
 
 
 
@@ -92,14 +94,29 @@ sudo mv /tmp/lightdm-gtk-greeter.conf /etc/lightdm/lightdm-gtk-greeter.conf
 
 ###
 sudo mkdir /opt/custom
-cd /opt/custom
-sudo touch target
-sudo touch vpn
-sudo touch lan
+sudo wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/lan -O /opt/custom/lan
+sudo wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/vpn -O /opt/custom/vpn
+sudo wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/target -O /opt/custom/target
 sudo chmod +x /opt/custom/*
 
 
-#Custom Panel Bar
+
+#_______Custom Keyboard_________
+xmlstarlet ed --inplace -s "/channel/property/custom" -t elem -n "property" -v "" -i "//property[@name='&lt;Super&gt;p']" -t attr -n "type" -v "string" -i "//property[@name='&lt;Super&gt;p']" -t attr -n "value" -v "qterminal"  /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
+wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/keyboard-layout.xml -O /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/keyboard-layout.xml
+
+#________Set 2-4 Workspaces________
+
+xmlstarlet ed --inplace -u "//property[@name='workspace_count']/@value" -v "2"  /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+xmlstarlet ed --inplace -d "//property[@name='workspace_names']/value"  /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+
+xmlstarlet ed --inplace -s "//property[@name='workspace_names']" -t elem -n "value" -v "" -i "//property[@name='workspace_names']/value[last()]" -t attr -n "type" -v "string" -i "//property[@name='workspace_names']/value[last()]" -t attr -n "value" -v "P"   /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+xmlstarlet ed --inplace -s "//property[@name='workspace_names']" -t elem -n "value" -v "" -i "//property[@name='workspace_names']/value[last()]" -t attr -n "type" -v "string" -i "//property[@name='workspace_names']/value[last()]" -t attr -n "value" -v "S"   /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+xmlstarlet ed --inplace -s "//property[@name='workspace_names']" -t elem -n "value" -v "" -i "//property[@name='workspace_names']/value[last()]" -t attr -n "type" -v "string" -i "//property[@name='workspace_names']/value[last()]" -t attr -n "value" -v "3"   /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+xmlstarlet ed --inplace -s "//property[@name='workspace_names']" -t elem -n "value" -v "" -i "//property[@name='workspace_names']/value[last()]" -t attr -n "type" -v "string" -i "//property[@name='workspace_names']/value[last()]" -t attr -n "value" -v "4"   /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+
+
+#_______Custom Panel Bar________
 
 wget  https://github.com/0x4r2/CustomKali/raw/main/Recursos/panel.zip -O /tmp/panel.zip
 unzip -o -d /home/$USERNAME/.config/xfce4/ /tmp/panel.zip
@@ -333,6 +350,11 @@ EOF
 
 
 
+#_________Enable services________
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+
 #_________Custom zsh_________
 
 
@@ -350,10 +372,12 @@ sudo cp -r /home/$USERNAME/powerlevel10k /root
 wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/p10k.zsh -O /home/$USERNAME/.p10k.zsh
 sudo ln -s /home/$USERNAME/.p10k.zsh /root/.p10k.zsh
 
-
 sed -i 's/fontFamily=.*/fontFamily=Hack Nerd Font Mono/'  /home/$USERNAME/.config/qterminal.org/qterminal.ini
 sed -i 's/fontSize=.*/fontSize=11/'  /home/$USERNAME/.config/qterminal.org/qterminal.ini
 sed -i 's/Rename%20Session=.*/Rename%20Session=F2/'    /home/$USERNAME/.config/qterminal.org/qterminal.ini
+
+sudo cp -f /home/$USERNAME/.config/qterminal.org/qterminal.ini /etc/xdg/qterminal.org/qterminal.ini
+
 
 sudo cp -f /home/$USERNAME/.zshrc /root/.zshrc
 

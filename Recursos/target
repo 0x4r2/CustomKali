@@ -1,0 +1,30 @@
+#!/bin/bash
+
+FILE=/tmp/._status
+TARG=/tmp/target
+ICO="什"
+
+IP=$(strings $TARG 2>/dev/null)
+
+ping -c1 -w1 -s32 -i1 $IP &> /dev/null
+if  [ $? -eq 0 ]; then
+	control="1"
+else
+        control="0"
+fi
+
+
+if [ -f "$FILE" ]; then
+	STATUS=$(string $FILE 2>/dev/null)
+	if [ "$STATUS" != "$control" ]; then
+		echo "$control" > $FILE &>/dev/null
+		STATUS="$control"
+	fi
+	if [ "$STATUS" = '1' ] && [ -f "$TARG" ]; then
+		echo  "$ICO $(strings $TARG)"
+	else
+		echo ""
+	fi
+else
+	touch "$FILE" &>/dev/null
+fi

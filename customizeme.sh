@@ -36,6 +36,8 @@ sudo apt install -y docker.io
 sudo apt install -y figlet   
 sudo apt install -y xclip
 sudo apt install -y git
+sudo apt install -y gobuster ffuf dirbuster hydra dirb
+
 
 
 #sudo apt install -y rofi caja gedit
@@ -51,7 +53,7 @@ cd /opt
 sudo git clone https://github.com/Dewalt-arch/pimpmykali
 cd pimpmykali
 ### Disable prompt root login, option N
-cat  pimpmykali.sh | sed 's/read -n1 -p "   Please type Y or N : " userinput/userinput="Y"/g' |sudo sponge pimpmykali.sh
+cat  pimpmykali.sh | sed 's/read -n1 -p "   Please type Y or N : " userinput/userinput="N"/g' |sudo sponge pimpmykali.sh
 sudo ./pimpmykali.sh --all
 
 
@@ -275,10 +277,10 @@ cat <<'EOF' >> /home/$USERNAME/.zshrc
 #	ALIASES
 #------------------------------------
 alias pingg='ping -c 4 -w1 -i1 8.8.8.8'
-alias cat='/usr/bin/bat --paging=never'
+alias cat='/usr/bin/batcat --paging=never'
 alias catn='/usr/bin/cat'
-alias catl='/usr/bin/bat'
-alias historial='/usr/bin/bat ~/.zsh_history'
+alias catl='/usr/bin/batcat'
+alias historial='/usr/bin/batcat ~/.zsh_history'
 
 #--------------------------------------
 #	FUNCTIONS
@@ -352,6 +354,8 @@ sudo ln -s /home/$USERNAME/.p10k.zsh /root/.p10k.zsh
 sed -i 's/fontFamily=.*/fontFamily=Hack Nerd Font Mono/'  /home/$USERNAME/.config/qterminal.org/qterminal.ini
 sed -i 's/fontSize=.*/fontSize=11/'  /home/$USERNAME/.config/qterminal.org/qterminal.ini
 sed -i 's/Rename%20Session=.*/Rename%20Session=F2/'    /home/$USERNAME/.config/qterminal.org/qterminal.ini
+
+sudo cp -f /home/$USERNAME/.zshrc /root/.zshrc
 
 sudo rm -rf /tmp/*
 reboot

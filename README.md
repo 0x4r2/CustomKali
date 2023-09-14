@@ -11,7 +11,7 @@ wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/customizeme.sh
 
 chmod +x customizeme.sh
 
-./customizeme.sh
+./customizeme.sh --all
 ```
 
 

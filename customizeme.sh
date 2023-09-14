@@ -16,7 +16,7 @@ function showhelp()
 {
  echo -e "Usage:\n$0 options [-a] [-b] [-c] [-t] [-p] [-m] [-h|--help]
 
- 
+
  -a|--all        	all custom (default)
  -c|--custom     	wallpapers, alias, functions
  -t|--tools 	 	update and install tools and pimpmykali
@@ -59,15 +59,20 @@ function tools()
 	sudo systemctl enable ssh
 	sudo systemctl start ssh
 
-	#______Hackfonts________
-	wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Hack.zip -N -O /tmp/hackfonts.zip
-	sudo unzip -o -d /usr/local/share/fonts /tmp/hackfonts.zip
+	
 
 	#______PimpMyKali________
 	sudo git clone https://github.com/Dewalt-arch/pimpmykali /opt/pimpmykali
 	### Disable prompt root login, option N
 	sudo sed -i 's/read -n1 -p "   Please type Y or N : " userinput/userinput="N"/g' /opt/pimpmykali/pimpmykali.sh
 	sudo /opt/pimpmykali/pimpmykali.sh --all
+}
+
+function getfonts()
+{
+	#______Hackfonts________
+	wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Hack.zip -N -O /tmp/hackfonts.zip
+	sudo unzip -o -d /usr/local/share/fonts /tmp/hackfonts.zip
 }
 
 function custom()
@@ -100,13 +105,6 @@ EOF
 
 
 sudo mv /tmp/lightdm-gtk-greeter.conf /etc/lightdm/lightdm-gtk-greeter.conf 
-
-echo -e "\n[+] Custom Images successfully \n \
-for change images please replace:\n\n \
-	\t-> Wallpaper: /usr/share/backgrounds/desktop.png \n \
-	\t-> Login Screen: /usr/share/backgrounds/login.png \n \
-	\t-> Profile: /usr/share/backgrounds/profile.png \n "
-
 
 
 #_______Custom Keyboard_________
@@ -214,8 +212,16 @@ sudo cp -f /home/$USERNAME/.zshrc /root/.zshrc
 
 echo -e "[+] Custom Complete:
 \t-> Wallpapers,login,fonts
+
 \t-> ZSH alias and Functions
 \t-> p10K Terminal Personalization"
+
+echo -e "\n[+] Custom Images successfully \n \
+for change images please replace:\n\n \
+	\t-> Wallpaper: /usr/share/backgrounds/desktop.png \n \
+	\t-> Login Screen: /usr/share/backgrounds/login.png \n \
+	\t-> Profile: /usr/share/backgrounds/profile.png \n "
+
 }
 
 function workspaces()
@@ -227,14 +233,28 @@ wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/xfwm4.xml 
 function panelbar()
 {
 #_______Custom Panel Bar________
+
+profilespath="/home/$USERNAME/.local/share/xfce4-panel-profiles"
+
+if [ ! -d "$profilespath" ]; then
+    echo "El directorio no existe. Creándolo..."
+    mkdir -p "$profilespath"
+    echo "Directorio creado exitosamente."
+fi
+
+sudo apt install -y python3-pip
+pip install psutil
+
+
 wget  https://github.com/0x4r2/CustomKali/raw/main/Recursos/custom4r2.tar.bz2 -N -O /home/$USERNAME/.local/share/xfce4-panel-profiles/custom4r2.tar.bz2
 xfce4-panel-profiles load /home/$USERNAME/.local/share/xfce4-panel-profiles/custom4r2.tar.bz2
+
 }
 
 function cqterminal()
 {
 #_______Customize qterminal interface_______
-wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/qtermminal.ini -N -O /home/$USERNAME/.config/qterminal.org/qterminal.ini
+wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/qterminal.ini -N -O /home/$USERNAME/.config/qterminal.org/qterminal.ini
 sudo cp -f /home/$USERNAME/.config/qterminal.org/qterminal.ini /etc/xdg/qterminal.org/qterminal.ini
 
 }
@@ -251,11 +271,12 @@ sudo wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/vpn -
 sudo wget https://raw.githubusercontent.com/0x4r2/CustomKali/main/Recursos/target -N -O /opt/custom/target
 sudo chmod +x /opt/custom/*
 
-echo -e "[+] Monitors was added in /opt/custom "
+echo -e "\n\n[+] Monitors was added in /opt/custom \n\n"
 }
 
 function all()
 {
+getfonts
 tools
 custom
 workspaces
@@ -285,7 +306,10 @@ else
 	        #exit 0
 	        ;;
 	    -c|--custom)    # wallpapers, alias, functions
+	    	getfonts
 	    	custom
+	    	read -p "[+] Images and fonts were customized successfully. Please press Enter to log out and then log back in..."
+	        xfce4-session-logout -l
 	    	exit 0
 	        ;;
 	    -t|--tools)
@@ -293,10 +317,12 @@ else
 	        exit 0
 	        ;;
 	    -p|--panel)		# customize panel 
+	        getfonts
 	        workspaces
 	        monitors
 	        panelbar
-	        xfce4-session-logout -l
+	        read -p "[+] Panel configurado correctamente, pulsa enter para reiniciar su sesión..."
+	        xfce4-session-logout -r
 	        exit 0
 	        ;;
 	    -m|--monitors-bar)  # download monitors for CTFs

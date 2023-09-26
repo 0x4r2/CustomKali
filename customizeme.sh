@@ -59,7 +59,8 @@ function tools()
 	sudo systemctl enable ssh
 	sudo systemctl start ssh
 
-	
+	#______Fix vmtools Share folder_______
+	sudo echo ".host:/ /mnt/hgfs  fuse.vmhgfs-fuse allow_other 0 0" >>  /etc/fstab
 
 	#______PimpMyKali________
 	sudo git clone https://github.com/Dewalt-arch/pimpmykali /opt/pimpmykali
